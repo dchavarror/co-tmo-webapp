@@ -1,0 +1,18 @@
+<form>
+    <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+
+        <h1></h1>
+        <div class="btn-group mr-2" role="group" aria-label="First group">
+            <button type="button" class="btn btn-success" (click)="onClickRegistrarInventario()">Registrar inventario</button>
+        </div>
+        <div class="btn-group mr-2" role="group" aria-label="Second group">
+            <button type="button" class="btn btn-warning" (click)=" onClickActualizarInventario()">Actualizar inventario</button>
+        </div>
+
+
+
+    </div>
+</form>
+<h1></h1>
+<app-guardar *ngIf="indRegInventario"></app-guardar>
+<app-actualizar *ngIf="indActInventario"></app-actualizar>

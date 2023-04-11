@@ -1,0 +1,234 @@
+<div class="card text-center navbar-dark bg-dark">
+    <div class=" text-light card-header ">
+        Registrar Inventario
+    </div>
+</div>
+<br>
+<app-loading *ngIf="loading"></app-loading>
+<div class="col">
+    <form [formGroup]="invForm">
+        <div class="row">
+
+            <div class="col">
+                <label for="categorias"><u>C</u>ategorias</label>
+                <select formControlName="scategoriai" (change)="onChangeSeleccionarCategoriaINV()" id="sCategorias" class="form-control" class="custom-select" id="sCategorias" aria-label="Categorias">
+                <option value="null">Seleccione</option>
+                <option *ngFor="let itemCategoria of listaCategorias" [value]="itemCategoria.codigo">
+                {{ itemCategoria.descripcion }}
+                </option>
+            </select>
+            </div>
+            <div class="col">
+                <button type="button" class="btn btn-link" (click)="openPopupGC()">Agregar categoria</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label for="sunidad"><u>T</u>ipo unidad</label>
+                <select formControlName="sunidad" id="unidades" class="form-control" class="custom-select" aria-label="Unidades">
+                <option value="null">Seleccione</option>
+                <option *ngFor="let itemUnidad of listaUnidades" [value]="itemUnidad.codigo">
+                {{ itemUnidad.descripcion }}
+                </option>
+            </select>
+            </div>
+            <div class="col">
+                <button type="button" class="btn btn-link" (click)="openPopupGU()">Agregar unidad</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label for="productos"><u>P</u>roductos</label>
+                <select formControlName="sproducto" id="sproducto" class="form-control" class="custom-select" id="sProductos" aria-label="Productos">
+                <option value="null">Seleccione</option>
+                <option *ngFor="let itemProducto of listaProductos" [value]="itemProducto.codigo">
+                {{ itemProducto.descripcion }}
+                </option>
+            </select>
+            </div>
+            <div class="col">
+                <button type="button" class="btn btn-link" (click)="openPopupGP()">Agregar productos</button>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <div class="col">
+                <label for="punitario"><u>P</u>recio unitario</label>
+                <input (keyup)="calcularPrecioFinal()" [value]="detalleProducto.precioUnitario | numberFormat" formControlName="punitario" #punitario type="text" class="form-control" placeholder="Precio unitario">
+            </div>
+            <div class="col">
+                <label for="pganancia"><u>P</u>orcentaje ganancia</label>
+                <input (keyup)="calcularPrecioFinal()" [value]="detalleProducto.porcentajeGanancia" formControlName="pganancia" #pganancia type="text" class="form-control" placeholder="Ingresar porcentaje ganancia">
+            </div>
+            <div class="col">
+                <label for="cantidad"><u>C</u>antidad</label>
+                <input [value]="detalleProducto.cantidad" formControlName="cantidad" #cantidad type="text" class="form-control" placeholder="Ingresar cantidad">
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="col">
+                <label for="pfinal"><u>P</u>recio final</label>
+                <input [value]="detalleProducto.precioFinal | numberFormat" formControlName="pfinal" class="form-control" placeholder="Ingresar precio final" readonly>
+            </div>
+            <div class="col">
+                <label for="codBarras"><u>C</u>odigo de barras</label>
+                <input [value]="producto.codigoBarras" formControlName="codBarras" #codBarras type="text" class="form-control" placeholder="Ingresar codigo barras">
+            </div>
+        </div>
+        <br>
+        <div class="col">
+            <div class="row">
+
+                <div *ngIf="indValidacion" class="alert alert-info" role="alert">
+                    {{ message }}
+                </div>
+                <div class="btn-group mr-2" role="group" aria-label="First group">
+                    <button type="button" class="btn btn-success" (click)="openPopupConf()">Guardar inventario</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<form class="form-row ui-g ui-fluid" [formGroup]="guardarProForm">
+
+    <div [ngStyle]="{'display':modalgp}" class="modal" tabindex="-1" #modalGP id="modalGP" tabindex="-1" aria-labelledby="modalGPLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ingresar datos producto</h5>
+                    <button type="button" class="close" (click)='hidePopupGP()'>
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label for="categorias"><u>C</u>ategorias</label>
+                    <div class="input-group">
+                        <select (change)="onChangeSeleccionarCategoriaGP()" formControlName="scategoria" id="sCategorias" class="form-control" class="custom-select" id="sCategorias" aria-label="Categorias">
+                            <option value="null">Seleccione</option>
+                            <option *ngFor="let itemCategoria of listaCategorias" [value]="itemCategoria.codigo">
+                            {{ itemCategoria.descripcion }}
+                            </option>
+                        </select>
+                    </div>
+                    <label for="descProducto"><u>D</u>escripción producto</label>
+                    <input [value]="producto.descripcion" formControlName="descProducto" #descProducto type="text" class="form-control" placeholder="Ingresar descripción producto">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" (click)='hidePopupGP()'>Cerrar</button>
+                    <button type="button" class="btn btn-primary" (click)="guardarProducto()">Guardar producto</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form class="form-row ui-g ui-fluid" [formGroup]="guarCategoriaForm">
+
+    <div [ngStyle]="{'display':modalgc}" class="modal" tabindex="-1" #modalGC id="modalGC" tabindex="-1" aria-labelledby="modalGCLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ingresar descripción</h5>
+                    <button type="button" class="close" (click)='hidePopupGC()'>
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label for="descripcionCategoria"><u>D</u>escripción categoria</label>
+                    <input formControlName="descripcionCategoria" #descripcionCategoria type="text" class="form-control" placeholder="Ingresar descripción categoria"></div>
+                <div *ngIf="indVisibleMessa" class="alert alert-info" role="alert">
+                    {{ message }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" (click)='hidePopupGC()'>Cerrar</button>
+                    <button type="button" class="btn btn-primary" (click)="guardarCategoria()">Guardar categoria</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form class="form-row ui-g ui-fluid" [formGroup]="guarUnidForm">
+
+    <div [ngStyle]="{'display':modalgu}" class="modal" tabindex="-1" #modalGC id="modalGC" tabindex="-1" aria-labelledby="modalGCLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ingresar descripción</h5>
+                    <button type="button" class="close" (click)='hidePopupGU()'>
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label for="categorias"><u>C</u>ategorias</label>
+                    <div class="input-group">
+                        <select formControlName="scategoriau" id="sCategorias" class="form-control" class="custom-select" id="sCategorias" aria-label="Categorias">
+                            <option value="null">Seleccione</option>
+                            <option *ngFor="let itemCategoria of listaCategorias" [value]="itemCategoria.codigo">
+                            {{ itemCategoria.descripcion }}
+                            </option>
+                        </select>
+                    </div>
+                    <label for="descripcionUnidad"><u>D</u>escripción unidad</label>
+                    <input formControlName="descripcionUnidad" #descripcionUnidad type="text" class="form-control" placeholder="Ingresar descripción unidad"></div>
+                <div *ngIf="indVisibleMessa" class="alert alert-info" role="alert">
+                    {{ message }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" (click)='hidePopupGU()'>Cerrar</button>
+                    <button type="button" class="btn btn-primary" (click)="guardarUnidad()">Guardar unidad</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div [ngStyle]="{'display':modalres}" class="modal" tabindex="-1" #modalRes id="modalRes" tabindex="-1" aria-labelledby="modalResLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Respuesta</h5>
+                <button type="button" class="close" (click)='hidePopupRes()'>
+      <span aria-hidden="true">&times;</span>
+    </button>
+            </div>
+            <div class="modal-body">
+
+                <div *ngIf="indRespuesta" class="alert alert-success animated fadeIn">
+                    <h3>{{ descripcionRes }}</h3>
+                </div>
+                <div *ngIf="!indRespuesta" class="alert alert-danger animated fadeIn">
+                    <h3>{{ descripcionRes }}</h3>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)='hidePopupRes()'>Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div [ngStyle]="{'display':modalconf}" class="modal" tabindex="-1" #modalConf id="modalConf" tabindex="-1" aria-labelledby="modalconfLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmación</h5>
+                <button type="button" class="close" (click)='hidePopupConf()'>
+      <span aria-hidden="true">&times;</span>
+    </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning animated fadeIn">
+                    <h3>¿Esta seguro que desea guardar en el inventario?</h3>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)='hidePopupConf()'>No</button>
+                <button type="button" class="btn btn-primary" (click)="guardarInventario()">Si</button>
+            </div>
+        </div>
+    </div>
+</div>

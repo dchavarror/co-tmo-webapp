@@ -1,0 +1,33 @@
+<div class="col">
+	<form [formGroup]="loginForm" role="form">
+
+		<h1 class="h3 mb-3 font-weight-bold">
+			<b>Contabilidad</b> Online TMO
+		</h1>
+
+		<div class="form-group">
+			<label for="username"><u>U</u>suario</label>
+			<input id="username" accesskey="u" required autofocus class="form-control" formControlName="username" />
+
+		</div>
+
+		<div class="form-group">
+			<label for="password"><u>C</u>lave</label>
+			<input type="password" id="password" accesskey="c" required class="form-control" formControlName="password" />
+
+		</div>
+		<div *ngIf="indVisibleMessage" class="alert alert-warning" role="alert">
+			{{ message }}
+		</div>
+		<div class="row">
+
+			<div class="col">
+				<button class="btn btn-primary" (click)="inciarSession()">Iniciar Sesión</button>
+
+			</div>
+
+
+		</div>
+
+	</form>
+</div>

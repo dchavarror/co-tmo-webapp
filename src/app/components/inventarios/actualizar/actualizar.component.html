@@ -1,0 +1,126 @@
+<div class="card text-center navbar-dark bg-dark">
+    <div class=" text-light card-header ">
+        Actualizar Inventario
+    </div>
+</div>
+<br>
+<div class="col">
+    <form [formGroup]="invActualizarForm">
+        <div class="row">
+            <div class="col">
+                <label for="categorias"><u>C</u>ategorias</label>
+                <select formControlName="scategoria" (change)="onChangeSeleccionarCategoriaInvAct()" id="sCategorias" class="form-control" class="custom-select" id="sCategorias" aria-label="Categorias">
+                <option value="null">Seleccione</option>
+                <option *ngFor="let itemCategoria of listaCategorias" [value]="itemCategoria.codigo">
+                {{ itemCategoria.descripcion }}
+                </option>
+            </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label for="sunidad"><u>T</u>ipo unidad</label>
+                <select (change)="obtenerInventario()" formControlName="sunidad" id="unidades" class="form-control" class="custom-select" aria-label="Unidades">
+                <option value="null">Seleccione</option>
+                <option *ngFor="let itemUnidad of listaUnidades" [value]="itemUnidad.codigo">
+                {{ itemUnidad.descripcion }}
+                </option>
+            </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label for="productos"><u>P</u>roductos</label>
+                <select (change)="obtenerInventario()" formControlName="sproducto" id="sproducto" class="form-control" class="custom-select" id="sProductos" aria-label="Productos">
+                <option value="null">Seleccione</option>
+                <option *ngFor="let itemProducto of listaProductos" [value]="itemProducto.codigo">
+                {{ itemProducto.descripcion }}
+                </option>
+            </select>
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="col">
+                <label for="punitario"><u>P</u>recio unitario</label>
+                <input (keyup)="calcularPrecioFinal()" [value]="detalleProducto.precioUnitario | numberFormat" formControlName="punitario" #punitario type="text" class="form-control" placeholder="Precio unitario">
+            </div>
+            <div class="col">
+                <label for="pganancia"><u>P</u>orcentaje ganancia</label>
+                <input (keyup)="calcularPrecioFinal()" [value]="detalleProducto.porcentajeGanancia" formControlName="pganancia" #pganancia type="text" class="form-control" placeholder="Ingresar porcentaje ganancia">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label for="cantidad"><u>C</u>antidad</label>
+                <input [value]="detalleProducto.cantidad" formControlName="cantidad" #cantidad type="text" class="form-control" placeholder="Ingresar cantidad">
+            </div>
+            <div class="col">
+                <label for="pfinal"><u>P</u>recio final</label>
+                <input [value]="detalleProducto.precioFinal | numberFormat" formControlName="pfinal" class="form-control" placeholder="Ingresar precio final" readonly>
+            </div>
+        </div>
+        <br>
+        <div class="col">
+            <div class="alert alert-warning" role="alert" *ngIf="indVisibleMessage">
+                {{ message }}
+            </div>
+            <div *ngIf="indValidacion" class="alert alert-info" role="alert">
+                {{ message }}
+            </div>
+            <div class="row">
+
+                <div class="btn-group mr-2" role="group" aria-label="First group">
+                    <button type="button" class="btn btn-success" (click)="openPopupConf()">Actualizar inventario</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div [ngStyle]="{'display':modalres}" class="modal" tabindex="-1" #modalRes id="modalRes" tabindex="-1" aria-labelledby="modalResLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Respuesta</h5>
+                <button type="button" class="close" (click)='hidePopupRes()'>
+      <span aria-hidden="true">&times;</span>
+    </button>
+            </div>
+            <div class="modal-body">
+
+                <div *ngIf="indRespuesta" class="alert alert-success animated fadeIn">
+                    <h3>{{ descripcionRes }}</h3>
+                </div>
+                <div *ngIf="!indRespuesta" class="alert alert-danger animated fadeIn">
+                    <h3>{{ descripcionRes }}</h3>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)='hidePopupRes()'>Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div [ngStyle]="{'display':modalconf}" class="modal" tabindex="-1" #modalConf id="modalConf" tabindex="-1" aria-labelledby="modalconfLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmación</h5>
+                <button type="button" class="close" (click)='hidePopupConf()'>
+      <span aria-hidden="true">&times;</span>
+    </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning animated fadeIn">
+                    <h3>¿Esta seguro que desea actualizar inventario?</h3>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)='hidePopupConf()'>No</button>
+                <button type="button" class="btn btn-primary" (click)="actualizarInventario()">Si</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,36 @@
+#wrapper {
+    background: white;
+}
+
+form {
+    background: #C0C0C0;
+    border-top: 10px solid black;
+    margin: auto;
+    max-width: 20%;
+    padding: 15px;
+    width: 50%;
+}
+
+form h1 {
+    color: black;
+}
+
+form .form-control {
+    box-sizing: border-box;
+    font-size: 10px;
+    height: auto;
+    padding: 5px;
+    position: relative;
+}
+
+form .form-control:focus {
+    z-index: 2;
+}
+
+form .col+div {
+    text-align: right;
+}
+
+form a {
+    color: white;
+}

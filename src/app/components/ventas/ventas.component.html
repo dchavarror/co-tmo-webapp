@@ -1,0 +1,220 @@
+<div class="card text-center navbar-dark bg-dark">
+    <div class="text-light card-header">Registrar Venta</div>
+</div>
+<br />
+<form [formGroup]="ventasForm">
+    <div class="col">
+        <div class="row">
+            <div class="col">
+                <label for="categorias"><u>C</u>ategorias</label>
+                <select formControlName="scategoria" (change)="onChangeSeleccionarCategoria()" [value]="producto.codigoCategoria" id="sCategorias" class="form-control" class="custom-select" id="sCategorias" aria-label="Categorias">
+          <option value="null">Seleccione</option>
+          <option
+            *ngFor="let itemCategoria of listaCategorias"
+            [value]="itemCategoria.codigo"
+          >
+            {{ itemCategoria.descripcion }}
+          </option>
+        </select>
+            </div>
+            <div class="col">
+                <label for="tUnidad"><u>T</u>ipo unidad</label>
+                <select (change)="obtenerInventario()" formControlName="sunidad" class="form-control" class="custom-select" id="unidades" aria-label="Unidades">
+          <option value="null">Seleccione</option>
+          <option
+            *ngFor="let itemUnidad of listaUnidades"
+            [value]="itemUnidad.codigo"
+          >
+            {{ itemUnidad.descripcion }}
+          </option>
+        </select>
+            </div>
+            <div class="col">
+                <label for="productos"><u>P</u>roductos</label>
+                <select (change)="obtenerInventario()" [value]="venta.producto.codigo" id="productos" class="form-control" formControlName="sproducto">
+          <option value="null">Seleccione</option>
+          <option
+            *ngFor="let itemProducto of listaProductos"
+            [value]="itemProducto.codigo"
+          >
+            {{ itemProducto.descripcion }}
+          </option>
+        </select>
+            </div>
+
+            <div class="col">
+                <label for="punitario"><u>P</u>recio unitario</label>
+                <input [value]="venta.precioVenta | numberFormat" formControlName="punitario" type="text" class="form-control" readonly />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label for="pventa"><u>P</u>recio venta</label>
+                <input [value]="venta.precioVenta | numberFormat" (keyup)="calcularValorTotal()" formControlName="pventa" class="form-control" placeholder="Ingresar precio venta" />
+            </div>
+            <div class="col">
+                <label for="cantidad"><u>C</u>antidad</label>
+                <input [value]="venta.cantidad" (click)="calcularValorTotal()" (keyup)="calcularValorTotal()" formControlName="cantidad" type="number" class="form-control" placeholder="Ingresar cantidad" />
+            </div>
+            <div class="col">
+                <label for="vtotal"><u>V</u>alor total</label>
+                <input [value]="venta.valorTotal | numberFormat" formControlName="vtotal" class="form-control" placeholder="Valor total" readonly />
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="col">
+        <div class="alert alert-warning" role="alert" *ngIf="indVisibleMessage">
+            {{ message }}
+        </div>
+        <div *ngIf="indValidacion" class="alert alert-info" role="alert">
+            {{ message }}
+        </div>
+        <div class="btn-group mr-2" role="group" aria-label="First group">
+            <button type="button" class="btn btn-success" (click)="agregarVenta()">
+        Agregar venta
+      </button>
+        </div>
+        <div class="btn-group mr-3" role="group" aria-label="Second group">
+            <button type="button" class="btn btn-success" (click)="openPopupCB()">
+                Codigo de barras
+              </button>
+        </div>
+    </div>
+</form>
+<div class="row m-5">
+    <div class="col">
+        <table class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Tipo unidad</th>
+                    <th>Precio venta</th>
+                    <th>Valor total</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let venta of listaVentas; let i = index">
+                    <td>{{ venta.producto.descripcion }}</td>
+                    <td> <input [value]="venta.cantidad" (keyup)="calcularValorTotalCantidad($event,i)" (click)="calcularValorTotalCantidad($event,i)" type="number" class="form-control" placeholder="Ingresar cantidad" /></td>
+                    <td>{{ venta.producto.tipoUnidad.descripcion }}</td>
+                    <td>{{ venta.precioVenta | numberFormat }}</td>
+                    <td>{{ venta.valorTotal | numberFormat }}</td>
+                    <td>
+                        <button type="button" class="fa fa-trash" (click)="eliminarVenta(i)"></button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <br />
+        <div *ngIf="indMostrarSubTotal" style="text-align: end">
+            <h3>
+                Sub total: <b>{{ subTotal | number }}</b>
+            </h3>
+
+            <br />
+            <div class="btn-group mr-2" role="group" aria-label="First group">
+                <button type="button" (click)="openPopupConf()" class="btn btn-success">
+          Confirmar venta
+        </button>
+            </div>
+        </div>
+    </div>
+
+    <div [ngStyle]="{ display: modalres }" class="modal" tabindex="-1" #modalRes id="modalRes" tabindex="-1" aria-labelledby="modalResLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Información</h5>
+                    <button type="button" class="close" (click)="hidePopupRes()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+                </div>
+                <div class="modal-body">
+                    <div *ngIf="indRespuesta" class="alert alert-success animated fadeIn">
+                        <h3>{{ this.respuesta.descripcion }}</h3>
+                    </div>
+                    <div *ngIf="!indRespuesta" class="alert alert-danger animated fadeIn">
+                        <h3>{{ this.respuesta.descripcion }}</h3>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" (click)="hidePopupRes()">
+            Aceptar
+          </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div [ngStyle]="{ display: modalconf }" class="modal" tabindex="-1" #modalConf id="modalConf" tabindex="-1" aria-labelledby="modalconfLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmación</h5>
+                    <button type="button" class="close" (click)="hidePopupConf()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning animated fadeIn">
+                        <h3>¿Esta seguro que desea confirmar la venta?</h3>
+                    </div>
+                    <form [formGroup]="factForm">
+                        <div class="col">
+                            <label for="paga"><u>P</u>agan con</label>
+                            <input (keyup)="actualizarCambio()" formControlName="pagan" type="text" class="form-control" placeholder="Pagan con" />
+                            <label for="cambio"><u>C</u>ambio</label>
+                            <input formControlName="cambio" type="text" [value]="cambio | numberFormat" readonly class="form-control" placeholder="Cambio" />
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="false" formControlName="rgenfact" id="flexCheckChecked" (change)="onClickRequiereFactura()" />
+                            <label class="form-check-label" for="flexCheckChecked">
+                Requiere generar factura
+              </label>
+                        </div>
+                        <div class="col" *ngIf="indAplicaFactura">
+                            <label for="nombre"><u>N</u>ombre cliente</label>
+                            <input formControlName="nombre" type="text" class="form-control" placeholder="Nombre cliente" />
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" (click)="hidePopupConf()">
+            No
+          </button>
+                    <button type="button" class="btn btn-primary" (click)="guardarVentas()">
+            Si
+          </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form class="form-row ui-g ui-fluid" [formGroup]="consCodBarrasForm">
+
+        <div [ngStyle]="{'display':modalcodbarras}" class="modal" tabindex="-1" #modalGC id="modalCC" tabindex="-1" aria-labelledby="modalGCLabel">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Ingresar codigo barras</h5>
+                        <button type="button" class="close" (click)='hidePopupCB()'>
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                    <div class="modal-body">
+                        <label for="codBarras"><u>C</u>odigo barras</label>
+                        <input (change)="consultarPorCodigoBarras()" formControlName="codBarras" #codBarras type="text" class="form-control" placeholder="Ingresar código barras" />
+                        <div *ngIf="indVisibleMessa" class="alert alert-info" role="alert">
+                            {{ message }}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" (click)='hidePopupCB()'>Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

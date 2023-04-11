@@ -1,0 +1,196 @@
+<div class="card text-center">
+    <div class="card-header">
+        Registrar Datos Empresa
+    </div>
+</div>
+ <div class="col">
+<form [formGroup]="registroForm">
+    <div class="form-group ">
+        <label for="productos"><u>S</u>egmentos</label>
+        <div class="row">
+            <div class="col">
+                <select (change)="onChangeSeleccionoSegmento()" formControlName="ssegmento" id="ssegmento" class="form-control" class="custom-select" id="ssegmento" aria-label="Segmentos">
+                    <option value="null">Seleccione</option>
+                    <option *ngFor="let itemSegmento of listaSegmentos" [value]="itemSegmento.codigo">
+                    {{ itemSegmento.descripcion }}
+                    </option>
+                </select>
+            </div>
+            <div class="col">
+                <button type="button" class="btn btn-link" (click)="openPopupGS()">Agregar segmento</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label for="primerNombre"><u>P</u>rimer nombre</label>
+                <input [value]="gestionarEmpresaRequest.persona.primerNombre" formControlName="primerNombre" type="text" class="form-control" placeholder="Primer nombre">
+            </div>
+            <div class="col">
+                <label for="segundoNombre"><u>S</u>egundo nombre</label>
+                <input [value]="gestionarEmpresaRequest.persona.segundoNombre" formControlName="segundoNombre" type="text" class="form-control" placeholder="Segundo nombre">
+            </div>
+            <div class="col">
+                <label for="primerApellido"><u>P</u>rimer apellido</label>
+                <input [value]="gestionarEmpresaRequest.persona.primerApellido" formControlName="primerApellido" type="text" class="form-control" placeholder="Primer apellido">
+            </div>
+            <div class="col">
+                <label for="segundoApellido"><u>S</u>egundo apellido</label>
+                <input [value]="gestionarEmpresaRequest.persona.segundoApellido" formControlName="segundoApellido" type="text" class="form-control" placeholder="Segundo apellido">
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="col">
+
+                <label for="numIdentificacion"><u>N</u>umero identificación</label>
+                <input [value]="gestionarEmpresaRequest.persona.documentoIdentificacion.numero" formControlName="numIdentificacion" type="text" class="form-control" placeholder="Numero identificación">
+            </div>
+            <div class="col">
+                <label for="nombreUsu"><u>N</u>ombre usuario</label>
+                <input [value]="gestionarEmpresaRequest.usuario.nombre" formControlName="nombreUsu" type="text" class="form-control" placeholder="Nombre usuario">
+            </div>
+            <div class="col">
+                <label for="password"><u>C</u>ontraseña</label>
+                <input formControlName="password" type="password" class="form-control" placeholder="Contraseña">
+            </div>
+            <div class="col">
+                <label for="razonSocial"><u>R</u>azón social</label>
+                <input [value]="gestionarEmpresaRequest.empresa.razonSocial" formControlName="razonSocial" type="text" class="form-control" placeholder="Razón social">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label for="nit"><u>N</u>it</label>
+                <input [value]="gestionarEmpresaRequest.empresa.nit" formControlName="nit" type="text" class="form-control" placeholder="Nit">
+            </div>
+            <div class="col">
+                <label for="direccionElectronica"><u>C</u>orreo electronico</label>
+                <input [value]="gestionarEmpresaRequest.direccionElectronica.correoElectronico" formControlName="direccionElectronica" type="text" class="form-control" placeholder="Correo electronico">
+            </div>
+            <div class="col">
+                <label for="direccionFisica"><u>D</u>irección</label>
+                <input [value]="gestionarEmpresaRequest.direccion.descripcion" formControlName="direccionFisica" type="text" class="form-control" placeholder="Dirección">
+            </div>
+            <div class="col">
+                <label for="departamentos"><u>D</u>epartamento</label>
+                <select (change)="onChangeSeleccionoDepartamento()" formControlName="codigoDepartamento" id="codigoDepartamento" class="form-control" class="custom-select" id="sdepartamento" aria-label="Departamentos">
+                    <option value="null">Seleccione</option>
+                    <option *ngFor="let itemDepartamento of listaDepartamentos" [value]="itemDepartamento.codigo">
+                    {{ itemDepartamento.nombre }}
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label for="municipios"><u>M</u>unicipios</label>
+                <select formControlName="codigoMunicipio" id="codigoMunicipio" class="form-control" class="custom-select" id="smunicipio" aria-label="Municipios">
+                <option value="null">Seleccione</option>
+                <option *ngFor="let itemMunicipio of listaMunicipios" [value]="itemMunicipio.codigo">
+                  {{ itemMunicipio.nombre }}
+                </option>
+            </select>
+            </div>
+            <div class="col">
+                <label for="numeroTelefono"><u>N</u>úmero telefono fijo</label>
+                <input formControlName="numeroTelefono" type="text" class="form-control" placeholder="Telefono fijo">
+            </div>
+            <div class="col">
+                <label for="numeroCelular"><u>N</u>umero celular</label>
+                <input formControlName="numeroCelular" type="text" class="form-control" placeholder="Número celular">
+            </div>
+        </div>
+    </div>
+	<div class="col">
+    <div class="row">
+        <div *ngIf="indVisibleMessa" class="alert alert-info" role="alert">
+            {{ message }}
+        </div>
+        <div class="btn-group mr-2" role="group" aria-label="First group">
+            <button type="button" class="btn btn-success" (click)="openPopupConf()">Guardar empresa</button>
+        </div>
+        <div class="btn-group mr-2" role="group" aria-label="Second group">
+            <button type="button" class="btn btn-secondary" (click)="volverInicio()">Volver inicio</button>
+        </div>
+    </div>
+	</div>
+</form>
+</div>
+
+
+
+
+<form class="form-row ui-g ui-fluid" [formGroup]="guarSegmentoForm">
+
+    <div [ngStyle]="{'display':modalgs}" class="modal" tabindex="-1" #modalGP id="modalGP" tabindex="-1" aria-labelledby="modalGPLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ingresar datos segmento</h5>
+                    <button type="button" class="close" (click)='hidePopupGS()'>
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <label for="descripcionSegmento"><u>D</u>escripción segmento</label>
+                    <input [value]="segmento.descripcion" formControlName="descripcionSegmento" #descripcionSegmento type="text" class="form-control" placeholder="Ingresar descripción segmento">
+                </div>
+                <div *ngIf="indVisibleMessa" class="alert alert-info" role="alert">
+                    {{ message }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" (click)='hidePopupGS()'>Cerrar</button>
+                    <button type="button" class="btn btn-primary" (click)="guardarSegmento()">Guardar Segmento</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div [ngStyle]="{'display':modalres}" class="modal" tabindex="-1" #modalRes id="modalRes" tabindex="-1" aria-labelledby="modalResLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Respuesta</h5>
+                <button type="button" class="close" (click)='hidePopupRes()'>
+    <span aria-hidden="true">&times;</span>
+  </button>
+            </div>
+            <div class="modal-body">
+
+                <div *ngIf="indRespuesta" class="alert alert-success animated fadeIn">
+                    <h3>{{ respuesta.descripcion }}</h3>
+                </div>
+                <div *ngIf="!indRespuesta" class="alert alert-danger animated fadeIn">
+                    <h3>{{ respuesta.descripcion }}</h3>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)='hidePopupRes()'>Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div [ngStyle]="{'display':modalconf}" class="modal" tabindex="-1" #modalConf id="modalConf" tabindex="-1" aria-labelledby="modalconfLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmación</h5>
+                <button type="button" class="close" (click)='hidePopupConf()'>
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning animated fadeIn">
+                    <h3>¿Esta seguro que desea guardar los datos de la empresa?</h3>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)='hidePopupConf()'>No</button>
+                <button type="button" class="btn btn-primary" (click)="guardarDatosEmpresa()">Si</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,130 @@
+<div class="card text-center navbar-dark bg-dark">
+    <div class=" text-light card-header ">
+        Realizar busqueda
+    </div>
+</div>
+<br>
+<div class="col">
+    <form [formGroup]="busquedaForm">
+        <div class="row">
+            <label for="finicio"><u>F</u>echa inicio</label>
+            <input formControlName="fecInicio" type='Date' [ngModel]='producto.fecInicio | date:"yyyy-MM-dd" '>
+            <label for="ffin"><u>F</u>echa fin</label>
+            <input formControlName="fecFin" type='Date' [ngModel]='producto.fecFin | date:"yyyy-MM-dd" '>
+
+            <div class="btn-group mr-2" role="group" aria-label="First group">
+                <button type="button" class="btn btn-outline-primary" (click)="getVentas()">Buscar ventas</button>
+            </div>
+            <div class="btn-group mr-2" role="group" aria-label="Second group">
+                <button type="button" class="btn btn-outline-primary" (click)="getInventario()">Buscar inventarios</button>
+            </div>
+
+        </div>
+
+        <div class="col">
+
+            <div *ngIf="indValidacion" class="alert alert-info" role="alert">
+                {{ message }}
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="table-responsive" *ngIf="indVentas">
+    <div class="d-flex flex-row-reverse bd-highlight mb-2">
+        <div class="p-2 bd-highlight">
+            <select (change)="onTableSizeChangeVenta($event)" class="custom-select">
+        <option *ngFor="let size of tableSizes" [ngValue]="size">
+          {{ size }}
+        </option>
+      </select>
+        </div>
+    </div>
+    <h3>VENTAS</h3>
+    <table class="table table-hover table-sm">
+        <thead class="thead-dark">
+            <tr>
+                <th>Producto</th>
+                <th>Tipo unidad</th>
+                <th>Cantidad</th>
+                <th>Precio Venta</th>
+                <th>Valor total</th>
+                <th>Fecha venta</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let venta of listaVentas | paginate : {
+                itemsPerPage: tableSize,
+                currentPage: page,
+                totalItems: count
+              };
+        let i = index" [class.active]="i == currentIndex">
+                <td>{{ venta.producto.descripcion }}</td>
+                <td>{{ venta.producto.tipoUnidad.descripcion }}</td>
+                <td>{{ venta.cantidad }}</td>
+                <td>{{ venta.precioVenta | numberFormat}}</td>
+                <td>{{ venta.valorTotal | numberFormat}}</td>
+                <td>{{ venta.fecCreacion }}</td>
+            </tr>
+
+        </tbody>
+    </table>
+    <div class="d-flex justify-content-center">
+        <pagination-controls responsive="true" previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="onTableDataChangeVenta($event)">
+        </pagination-controls>
+    </div>
+    <h5>TOTAL VENTAS: {{ totalConGanan | numberFormat }}</h5>
+</div>
+
+
+
+<div class="table-responsive" *ngIf="indInv">
+    <div class="d-flex flex-row-reverse bd-highlight mb-2">
+        <div class="p-2 bd-highlight">
+            <select (change)="onTableSizeChangeInventario($event)" class="custom-select">
+        <option *ngFor="let size of tableSizes" [ngValue]="size">
+          {{ size }}
+        </option>
+      </select>
+        </div>
+    </div>
+    <h3>INVENTARIOS</h3>
+    <table class="table table-hover table-sm">
+        <thead class="thead-dark">
+            <tr>
+                <th>Producto</th>
+                <th>Tipo unidad</th>
+                <th>Cantidad</th>
+                <th>Precio Unitario</th>
+                <th>Porcentaje Ganancia</th>
+                <th>Precio final</th>
+                <th>Fecha creación</th>
+                <th>Fecha modificación</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let inventario of listaInventarios | paginate : {
+                itemsPerPage: tableSize,
+                currentPage: page,
+                totalItems: count
+              };
+        let i = index" [class.active]="i == currentIndex">
+                <td>{{ inventario.producto.descripcion }}</td>
+                <td>{{ inventario.tipoUnidad.descripcion }}</td>
+                <td>{{ inventario.cantidad }}</td>
+                <td>{{ inventario.precioUnitario | numberFormat}}</td>
+                <td>{{ inventario.porcentajeGanancia }}%</td>
+                <td>{{ inventario.precioFinal | numberFormat}}</td>
+                <td>{{ inventario.fecCreacion }}</td>
+                <td>{{ inventario.fecModificacion }}</td>
+            </tr>
+
+        </tbody>
+    </table>
+    <div class="d-flex justify-content-center">
+        <pagination-controls responsive="true" previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="onTableDataChangeInventario($event)">
+        </pagination-controls>
+    </div>
+    <h5>SIN GANANCIAS: {{ totalSinGanan | numberFormat }}</h5>
+    <h5>CON GANANCIAS: {{ totalConGanan | numberFormat }}</h5>
+</div>
